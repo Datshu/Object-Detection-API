@@ -59,6 +59,7 @@ def get_detections():
 
     for j in range(len(raw_images)):
         # create list of responses for current image
+        count = 0
         responses = []
         raw_img = raw_images[j]
         num+=1
@@ -72,16 +73,20 @@ def get_detections():
 
         print('detections:')
         for i in range(nums[0]):
+            if int(classes[0][i] == 0):
+                count +=1
             print('\t{}, {}, {}'.format(class_names[int(classes[0][i])],
                                             np.array(scores[0][i]),
                                             np.array(boxes[0][i])))
             responses.append({
                 "class": class_names[int(classes[0][i])],
                 "confidence": float("{0:.2f}".format(np.array(scores[0][i])*100))
+
             })
         response.append({
             "image": image_names[j],
-            "detections": responses
+            "detections": responses,
+            "count of persons" : count
         })
         img = cv2.cvtColor(raw_img.numpy(), cv2.COLOR_RGB2BGR)
         img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
